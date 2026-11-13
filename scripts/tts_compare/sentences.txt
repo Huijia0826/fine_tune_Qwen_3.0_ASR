@@ -1,0 +1,22 @@
+# id	lang	category	text   (tab-separated; lines starting with # are ignored)
+# lang: zh = 纯中文, mix = 中英混说, en = 纯英文。category 只用于听评时分组。
+s01	mix	code-switch/brand	帮我把 PostHog 的 dashboard 发到飞书群里，顺便 @ 一下产品组。
+s02	mix	code-switch/dev	这个项目先部署到 Vercel 上，数据库就用 Supabase，不用再自己搭了。
+s03	mix	code-switch/dev	你让 Claude Code 帮我看一下这个 PR，CI 一直挂在 lint 那一步。
+s04	mix	code-switch/brand	LibTV 那个 demo 下周三之前要给到客户，你跟 Notion 里的排期对一下。
+s05	mix	code-switch/acronym	我们这个季度的 DAU 涨了百分之十二，但是 ARPU 反而掉了一点。
+s06	mix	code-switch/names	明天上午十点跟 Jensen 和 Satya 那边的团队开个 Zoom，记得发 calendar invite。
+s07	mix	code-switch/dev	把 GitHub Actions 里的 Node 版本升到 22，再把 pnpm 的 lockfile 重新生成一下。
+s08	mix	code-switch/casual	哎你那个 Figma 链接发我一下呗，我在 Slack 上找半天没找到。
+s09	mix	code-switch/self-correction	把文件发到 Gmail，不对，是发到 Outlook 那个工作邮箱。
+s10	mix	code-switch/question	你觉得我们用 Cursor 还是 Windsurf 比较好？还是直接上 Copilot？
+s11	zh	zh/brand-place	下午三点在霸王茶姬三里屯店见，我先帮你点一杯伯牙绝弦。
+s12	zh	zh/place	我们这次团建先去重庆解放碑，再坐高铁到成都，最后去九寨沟。
+s13	zh	zh/numbers-date	订单号是二零二六一一零九，金额一千两百三十五块八，十一月十五号之前要付款。
+s14	zh	zh/casual	嗯就是说这个方案吧我觉得还行，但是预算那块得再砍一砍。
+s15	zh	zh/polyphone	银行行长说这个重要的会议要重新安排，大家都得参加。
+s16	en	en/names	Can you forward the Supabase invoice to Siobhan and cc Nguyen from finance?
+s17	en	en/numbers-date	The meeting moved to Tuesday, March 3rd at 4:30 p.m., and the budget is $12,500.
+s18	en	en/question	Did anyone check whether the Kubernetes cluster on AWS is still running out of memory?
+s19	en	en/self-correction	Send it to Rachel, sorry, I mean Rebecca, by Friday at the latest.
+s20	en	en/casual	Hey, just a quick heads-up, I'm gonna be like ten minutes late to the standup.

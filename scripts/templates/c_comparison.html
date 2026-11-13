@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>lora_large_v3_C step 600 — comparison</title>
+<style>
+.viz-root {
+  color-scheme: light;
+  --page: #f9f9f7; --surface-1: #fcfcfb;
+  --text-primary: #0b0b0b; --text-secondary: #52514e; --muted: #898781;
+  --grid: #e1e0d9; --axis: #c3c2b7;
+  --series-1: #2a78d6; --series-2: #eb6834; --series-3: #1baf7a; --series-4: #eda100; --series-5: #e87ba4;
+  --div-pos: #e34948; --div-neg: #2a78d6;
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) .viz-root {
+    color-scheme: dark;
+    --page: #0d0d0d; --surface-1: #1a1a19;
+    --text-primary: #ffffff; --text-secondary: #c3c2b7; --muted: #898781;
+    --grid: #2c2c2a; --axis: #383835;
+    --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500; --series-5: #d55181;
+    --div-pos: #e66767; --div-neg: #3987e5;
+  }
+}
+:root[data-theme="dark"] .viz-root {
+  color-scheme: dark;
+  --page: #0d0d0d; --surface-1: #1a1a19;
+  --text-primary: #ffffff; --text-secondary: #c3c2b7; --muted: #898781;
+  --grid: #2c2c2a; --axis: #383835;
+  --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500; --series-5: #d55181;
+  --div-pos: #e66767; --div-neg: #3987e5;
+}
+body { margin: 0; }
+.viz-root { background: var(--page); color: var(--text-primary); min-height: 100vh;
+  font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-variant-numeric: tabular-nums; padding: 24px; box-sizing: border-box; }
+main { max-width: 1100px; margin: 0 auto; }
+h1 { font-size: 22px; margin: 0 0 4px; }
+h2 { font-size: 17px; margin: 0 0 4px; }
+.sub { color: var(--text-secondary); margin: 0 0 16px; }
+.card { background: var(--surface-1); border: 1px solid var(--grid); border-radius: 8px; padding: 18px 20px;
+  margin: 0 0 20px; }
+.note { color: var(--text-secondary); font-size: 13px; margin: 6px 0 0; }
+.takeaways li { margin: 4px 0; }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; margin: 8px 0 4px; color: var(--text-secondary); font-size: 13px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+svg text { fill: var(--muted); font-size: 12px; }
+svg .lbl { fill: var(--text-secondary); }
+svg .val { fill: var(--text-primary); font-size: 11px; }
+.hit { fill: transparent; cursor: default; }
+.hit:hover + .mark, .mark.hl { opacity: 1; }
+#tip { position: fixed; pointer-events: none; background: var(--surface-1); color: var(--text-primary);
+  border: 1px solid var(--axis); border-radius: 6px; padding: 6px 9px; font-size: 12px; box-shadow: 0 2px 8px #0003;
+  display: none; max-width: 320px; z-index: 10; }
+details { margin-top: 10px; }
+summary { cursor: pointer; color: var(--text-secondary); font-size: 13px; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; margin-top: 8px; }
+th, td { text-align: right; padding: 4px 8px; border-bottom: 1px solid var(--grid); vertical-align: top; }
+th:first-child, td:first-child { text-align: left; }
+th { color: var(--text-secondary); font-weight: 600; }
+td.txt { text-align: left; white-space: pre-wrap; max-width: 300px; font-size: 12px; }
+td.txt div { max-height: 260px; overflow: auto; }
+td.txt mark { background: color-mix(in srgb, var(--div-pos) 22%, transparent); color: var(--text-primary);
+  border-radius: 3px; padding: 0 1px; }
+td.txt del { color: var(--div-neg); text-decoration-thickness: 1.5px; margin: 0 1px; }
+.folded .fold { display: none; }
+.same { color: var(--muted); font-size: 11px; }
+.fold-marker { display: none; color: var(--muted); }
+.folded .fold-marker { display: inline; }
+.difflegend { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; font-size: 13px; color: var(--text-secondary);
+  margin: 8px 0; }
+.difflegend mark { background: color-mix(in srgb, var(--div-pos) 22%, transparent); color: var(--text-primary);
+  border-radius: 3px; padding: 0 2px; }
+.difflegend del { color: var(--div-neg); }
+.best { font-weight: 700; }
+.theme { float: right; font-size: 12px; background: var(--surface-1); color: var(--text-secondary);
+  border: 1px solid var(--axis); border-radius: 6px; padding: 4px 8px; cursor: pointer; }
+</style>
+</head>
+<body>
+<div class="viz-root">
+<main>
+<button class="theme" id="theme">切换深/浅色</button>
+<h1>lora_large_v3_C step 600 — 对比结果</h1>
+<p class="sub">2026-11-02 · 所有数字都是用保存好的 run 重新算的 official MER（越低越好）· benchmark v1 = 锁定测试集 412 条，参考解码 v2（不带 loop guard）</p>
+
+<div class="card">
+<h2>要点</h2>
+<ul class="takeaways" id="takeaways"></ul>
+</div>
+
+<div class="card">
+<h2>benchmark v1：各切片的 MER</h2>
+<p class="note">按语言、按音频长度分别看。zero-shot 在 &lt;5 s 上的 27% 几乎全是一条 2 s 的音频陷入循环（191 个错误）。</p>
+<div class="legend" id="leg-bv1"></div>
+<div id="chart-bv1"></div>
+<details><summary>表格</summary><div id="table-bv1"></div></details>
+</div>
+
+<div class="card">
+<h2>差异是否显著（配对说话人 bootstrap，95% 区间）</h2>
+<p class="note">差值 = 前者 − 后者，单位是 MER 百分点。区间整段落在 0 的左边 = 前者显著更好；跨过 0 = 无法区分。</p>
+<div id="chart-boot"></div>
+<details><summary>表格</summary><div id="table-boot"></div></details>
+</div>
+
+<div class="card">
+<h2>C 比 VoiceCursor 多错在哪里</h2>
+<p class="note">每个长度 × 语言格子里 C 的错误数减去 VoiceCursor 的错误数。红色向右 = VoiceCursor 更好；蓝色向左 = C 更好。</p>
+<div id="chart-gap"></div>
+<details><summary>表格</summary><div id="table-gap"></div></details>
+</div>
+
+<div class="card">
+<h2>验证集（只用于选模型，不是测试集）</h2>
+<p class="note">users' val 合并 125 条是选 checkpoint 时预先定好的指标。ASCEND / long-form 两个集合上，"zero-shot + loop guard" 没有跑。</p>
+<div class="legend" id="leg-val"></div>
+<div id="chart-val"></div>
+<details><summary>表格</summary><div id="table-val"></div></details>
+</div>
+
+<div class="card">
+<h2>推理速度（E7，H100，batch 1，users' val 125 条）</h2>
+<p class="note">横轴 = &lt;5 s 音频的 p50 延迟，纵轴 = MER。越靠左下越好。线上 ASR 的 p50 是 0.62 s（流式、包含网络），和这里不是同一个量。</p>
+<div id="chart-lat"></div>
+<details><summary>表格</summary><div id="table-lat"></div></details>
+</div>
+
+<div class="card">
+<h2>VoiceCursor 领先最多的 12 条</h2>
+<p class="note" id="wins"></p>
+<div class="difflegend">
+  <span><mark>高亮</mark> = 输出里错的或多出来的词</span>
+  <span><del>删除线</del> = 参考里有、但输出漏掉或被替换掉的词</span>
+  <span>标点和大小写不标（official MER 也不算）</span>
+  <label><input type="checkbox" id="fold" checked> 折叠和参考一致的长段（只保留差异前后各 6 个词）</label>
+</div>
+<div id="table-clips" class="folded"></div>
+</div>
+</main>
+<div id="tip"></div>
+</div>
+
+<script>
+const DATA = /*__DATA__*/null;
+const NS = "http://www.w3.org/2000/svg";
+const css = v => getComputedStyle(document.querySelector(".viz-root")).getPropertyValue(v).trim();
+const SERIES = ["--series-1", "--series-2", "--series-3", "--series-4", "--series-5"];
+const tip = document.getElementById("tip");
+const fmt = (x, d = 2) => x == null ? "—" : Number(x).toFixed(d);
+
+function el(tag, attrs = {}, parent) {
+  const e = document.createElementNS(NS, tag);
+  for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function showTip(evt, html) {
+  tip.innerHTML = html; tip.style.display = "block";
+  const x = Math.min(evt.clientX + 14, window.innerWidth - tip.offsetWidth - 8);
+  tip.style.left = x + "px"; tip.style.top = (evt.clientY + 14) + "px";
+}
+function hideTip() { tip.style.display = "none"; }
+function hover(node, html, mark) {
+  node.addEventListener("mousemove", e => { showTip(e, html); if (mark) mark.setAttribute("opacity", 1); });
+  node.addEventListener("mouseleave", () => { hideTip(); if (mark) mark.setAttribute("opacity", 0.92); });
+}
+function legend(id, names) {
+  document.getElementById(id).innerHTML = names.map((n, i) =>
+    `<span><i style="background:var(${SERIES[i]})"></i>${n}</span>`).join("");
+}
+function table(id, head, rows, bestCols) {
+  const html = ["<table><tr>" + head.map(h => `<th>${h}</th>`).join("") + "</tr>"];
+  for (const r of rows) {
+    let best = null;
+    if (bestCols) { const vals = bestCols.map(c => r[c]).filter(v => v != null); best = Math.min(...vals); }
+    html.push("<tr>" + r.map((v, j) => {
+      const cls = bestCols && bestCols.includes(j) && v === best ? ' class="best"' : "";
+      return `<td${cls}>${typeof v === "number" && !Number.isInteger(v) ? fmt(v) : (v ?? "—")}</td>`;
+    }).join("") + "</tr>");
+  }
+  document.getElementById(id).innerHTML = html.join("") + "</table>";
+}
+function niceMax(v) { const s = [5, 10, 15, 20, 25, 30]; return s.find(x => x >= v) || Math.ceil(v / 10) * 10; }
+
+// Horizontal grouped bars: groups = rows, one bar per series, value axis shared.
+function groupedBars(id, rows, labelKey, series, opts = {}) {
+  const box = document.getElementById(id); box.innerHTML = "";
+  const W = box.clientWidth || 1000, left = opts.left || 150, right = 60, barH = 9, gap = 2, groupGap = 14;
+  const groupH = series.length * (barH + gap) - gap;
+  const H = rows.length * (groupH + groupGap) + 30;
+  const max = niceMax(Math.max(...rows.flatMap(r => series.map(s => r[s] ?? 0))));
+  const x = v => left + (W - left - right) * v / max;
+  const svg = el("svg", { width: W, height: H, role: "img", "aria-label": opts.aria || "" }, box);
+  for (let t = 0; t <= max; t += max <= 15 ? 2.5 : 5) {
+    el("line", { x1: x(t), x2: x(t), y1: 0, y2: H - 22, stroke: css("--grid"), "stroke-width": 1 }, svg);
+    el("text", { x: x(t), y: H - 6, "text-anchor": "middle" }, svg).textContent = t + "%";
+  }
+  rows.forEach((r, gi) => {
+    const y0 = gi * (groupH + groupGap) + 4;
+    const t = el("text", { x: left - 10, y: y0 + groupH / 2 + 4, "text-anchor": "end", class: "lbl" }, svg);
+    t.textContent = r[labelKey] + (r.n ? `  (n=${r.n})` : "");
+    series.forEach((s, si) => {
+      const v = r[s]; if (v == null) return;
+      const y = y0 + si * (barH + gap), w = Math.max(x(v) - left, 1);
+      const mark = el("rect", { x: left, y, width: w, height: barH, rx: 3, fill: css(SERIES[si]), opacity: 0.92 }, svg);
+      if (opts.highlight === s) el("text", { x: left + w + 4, y: y + barH - 1, class: "val" }, svg).textContent = fmt(v);
+      const hit = el("rect", { x: left, y: y - 1, width: W - left - right, height: barH + 2, class: "hit" }, svg);
+      hover(hit, `<b>${r[labelKey]}</b><br>${s}: <b>${fmt(v)}%</b>`, mark);
+    });
+  });
+  el("line", { x1: left, x2: left, y1: 0, y2: H - 22, stroke: css("--axis") }, svg);
+}
+
+// Forest plot of bootstrap intervals.
+function forest(id, rows) {
+  const box = document.getElementById(id); box.innerHTML = "";
+  const W = box.clientWidth || 1000, left = 290, right = 30, rowH = 22;
+  const H = rows.length * rowH + 40;
+  const lo = Math.min(-8, ...rows.map(r => r.lo)), hi = Math.max(4, ...rows.map(r => r.hi));
+  const clampLo = -8, clampHi = 4;
+  const x = v => left + (W - left - right) * (Math.max(clampLo, Math.min(clampHi, v)) - clampLo) / (clampHi - clampLo);
+  const svg = el("svg", { width: W, height: H, role: "img", "aria-label": "bootstrap intervals" }, box);
+  for (let t = clampLo; t <= clampHi; t += 2) {
+    el("line", { x1: x(t), x2: x(t), y1: 0, y2: H - 24, stroke: t === 0 ? css("--axis") : css("--grid"),
+                 "stroke-width": t === 0 ? 2 : 1 }, svg);
+    el("text", { x: x(t), y: H - 8, "text-anchor": "middle" }, svg).textContent = (t > 0 ? "+" : "") + t;
+  }
+  let prev = null;
+  rows.forEach((r, i) => {
+    const y = i * rowH + 14;
+    if (r.pair !== prev) {
+      el("text", { x: 0, y: y + 4, class: "lbl", "font-weight": 600 }, svg).textContent = r.pair;
+      prev = r.pair;
+    }
+    el("text", { x: left - 12, y: y + 4, "text-anchor": "end" }, svg).textContent = r.slice;
+    const sig = r.hi < 0 || r.lo > 0;
+    const color = sig ? (r.diff < 0 ? css("--div-neg") : css("--div-pos")) : css("--muted");
+    el("line", { x1: x(r.lo), x2: x(r.hi), y1: y, y2: y, stroke: color, "stroke-width": 2, "stroke-linecap": "round" }, svg);
+    const dot = el("circle", { cx: x(r.diff), cy: y, r: 5, fill: color, stroke: css("--surface-1"), "stroke-width": 2 }, svg);
+    if (r.lo < clampLo) el("text", { x: x(clampLo) - 2, y: y + 4, "text-anchor": "end" }, svg).textContent = "◂";
+    const hit = el("rect", { x: left, y: y - rowH / 2, width: W - left - right, height: rowH, class: "hit" }, svg);
+    hover(hit, `<b>${r.pair}</b> · ${r.slice}<br>差值 <b>${r.diff > 0 ? "+" : ""}${fmt(r.diff)}</b>  [${fmt(r.lo)}, ${fmt(r.hi)}]<br>${sig ? "显著" : "不显著（区间跨过 0）"}`, dot);
+  });
+}
+
+// Diverging bars of the error gap per cell.
+function gapBars(id, rows) {
+  const box = document.getElementById(id); box.innerHTML = "";
+  const W = box.clientWidth || 1000, left = 150, right = 70, barH = 14, rowGap = 6;
+  const H = rows.length * (barH + rowGap) + 30;
+  const m = Math.max(...rows.map(r => Math.abs(r.gap)));
+  const mid = left + (W - left - right) / 2, half = (W - left - right) / 2;
+  const x = v => mid + half * v / m;
+  const svg = el("svg", { width: W, height: H, role: "img", "aria-label": "error gap" }, box);
+  el("line", { x1: mid, x2: mid, y1: 0, y2: H - 22, stroke: css("--axis"), "stroke-width": 2 }, svg);
+  el("text", { x: mid + 8, y: H - 6 }, svg).textContent = "VoiceCursor 更好 →";
+  el("text", { x: mid - 8, y: H - 6, "text-anchor": "end" }, svg).textContent = "← C 更好";
+  rows.forEach((r, i) => {
+    const y = i * (barH + rowGap) + 4;
+    el("text", { x: left - 10, y: y + barH - 3, "text-anchor": "end", class: "lbl" }, svg).textContent = r.bucket;
+    const x0 = Math.min(mid, x(r.gap)), w = Math.max(Math.abs(x(r.gap) - mid), 1);
+    const mark = el("rect", { x: x0, y, width: w, height: barH, rx: 3, fill: r.gap > 0 ? css("--div-pos") : css("--div-neg"), opacity: 0.92 }, svg);
+    el("text", { x: r.gap >= 0 ? x0 + w + 4 : x0 - 4, y: y + barH - 3, "text-anchor": r.gap >= 0 ? "start" : "end", class: "val" }, svg)
+      .textContent = (r.gap > 0 ? "+" : "") + r.gap;
+    const hit = el("rect", { x: left, y: y - 2, width: W - left - right, height: barH + 4, class: "hit" }, svg);
+    hover(hit, `<b>${r.bucket}</b> · ${r.clips} 条，${r.n} 个参考 token<br>C ${r.c} 个错误 · VoiceCursor ${r.vc} 个<br>差 <b>${r.gap > 0 ? "+" : ""}${r.gap}</b>`, mark);
+  });
+}
+
+// Scatter: latency (x) vs MER (y), direct-labelled points.
+function scatter(id, rows) {
+  const box = document.getElementById(id); box.innerHTML = "";
+  const W = box.clientWidth || 1000, H = 340, l = 60, r = 220, t = 16, b = 40;
+  const xmax = 0.6, ymin = 7, ymax = 9.5;
+  const x = v => l + (W - l - r) * v / xmax, y = v => t + (H - t - b) * (ymax - v) / (ymax - ymin);
+  const svg = el("svg", { width: W, height: H, role: "img", "aria-label": "latency vs MER" }, box);
+  for (let v = 0; v <= xmax + 1e-9; v += 0.1) {
+    el("line", { x1: x(v), x2: x(v), y1: t, y2: H - b, stroke: css("--grid") }, svg);
+    el("text", { x: x(v), y: H - b + 16, "text-anchor": "middle" }, svg).textContent = v.toFixed(1) + " s";
+  }
+  for (let v = ymin; v <= ymax + 1e-9; v += 0.5) {
+    el("line", { x1: l, x2: W - r, y1: y(v), y2: y(v), stroke: css("--grid") }, svg);
+    el("text", { x: l - 8, y: y(v) + 4, "text-anchor": "end" }, svg).textContent = v.toFixed(1) + "%";
+  }
+  el("text", { x: (l + W - r) / 2, y: H - 4, "text-anchor": "middle" }, svg).textContent = "<5 s 音频 p50 延迟";
+  const sorted = [...rows].sort((a, b) => a.mer - b.mer);
+  sorted.forEach(p => {
+    const cx = x(p["<5 s"]), cy = y(p.mer);
+    const dot = el("circle", { cx, cy, r: 6, fill: css("--series-1"), stroke: css("--surface-1"), "stroke-width": 2, opacity: 0.92 }, svg);
+    el("text", { x: cx + 10, y: cy + 4, class: "lbl" }, svg).textContent = p.variant;
+    const hit = el("circle", { cx, cy, r: 14, class: "hit" }, svg);
+    hover(hit, `<b>${p.variant}</b><br>MER ${fmt(p.mer)}%<br>p50: &lt;5 s ${fmt(p["<5 s"])} s · 5-15 s ${fmt(p["5-15 s"])} s · 15-30 s ${fmt(p["15-30 s"])} s · &gt;30 s ${fmt(p[">30 s"], 1)} s`, dot);
+  });
+}
+
+function render() {
+  const D = DATA, S = D.systems, V = D.val_systems;
+  const all = D.bv1[0], c = "C step 600";
+  const longGap = D.gap_cells.filter(r => r.bucket.startsWith(">30s")).reduce((a, r) => a + r.gap, 0);
+  const total = D.gap_cells.reduce((a, r) => a + r.gap, 0);
+  const en515 = D.gap_cells.find(r => r.bucket === "5-15s · en");
+  const pooled = D.val[0];
+  const fastest = D.latency.filter(r => r.variant.startsWith("faster-whisper fp16")).sort((a, b) => a["<5 s"] - b["<5 s"])[0];
+  document.getElementById("takeaways").innerHTML = [
+    `<b>benchmark v1：C ${fmt(all[c])}%，B ${fmt(all["B step 800"])}%，zero-shot ${fmt(all["large-v3 zero-shot"])}%，VoiceCursor ${fmt(all.VoiceCursor)}%。</b>C 和 B 的差距不显著，C 还没有在测试集上明显超过 B。`,
+    `<b>和 VoiceCursor 的差距集中在 &gt;30 s 长音频：</b>总共多 ${total} 个错误，其中长音频一项就占了 ${longGap > 0 ? "+" : ""}${longGap}；而在 5–15 s 英文上 C 反而少 ${-en515.gap} 个错误。所以短句识别 C 已经不差，问题在长音频的解码方式。`,
+    `<b>格式：</b>参考答案里带列表 / 换行的 ${D.list_gap.clips} 条，贡献了 ${D.list_gap.gap > 0 ? "+" : ""}${D.list_gap.gap} 个错误差距（"1. 2." 这种列表格式被算成识别错误）。`,
+    `<b>验证集（users' val 125 条）：</b>C ${fmt(pooled[c])}% vs B ${fmt(pooled["B step 800"])}% vs zero-shot+loop guard ${fmt(pooled["zero-shot + loop guard"])}%。`,
+    fastest ? `<b>速度：</b>${fastest.variant} 在 &lt;5 s 音频上 p50 ${fmt(fastest["<5 s"])} s，MER ${fmt(fastest.mer)}%，当前 HF fp32 beam5 是 0.51 s、7.35%。` : "",
+  ].filter(Boolean).map(s => `<li>${s}</li>`).join("");
+
+  legend("leg-bv1", S);
+  groupedBars("chart-bv1", D.bv1, "slice", S, { highlight: c, aria: "benchmark v1 MER by slice" });
+  table("table-bv1", ["切片", "n", ...S], D.bv1.map(r => [r.slice, r.n, ...S.map(s => r[s])]), S.map((_, i) => i + 2));
+
+  forest("chart-boot", D.boot);
+  table("table-boot", ["对比", "切片", "差值", "下限", "上限"], D.boot.map(r => [r.pair, r.slice, r.diff, r.lo, r.hi]));
+
+  gapBars("chart-gap", D.gap_cells);
+  table("table-gap", ["长度 · 语言", "条数", "参考 token", "C 错误", "VoiceCursor 错误", "差"],
+        D.gap_cells.map(r => [r.bucket, r.clips, r.n, r.c, r.vc, r.gap]));
+
+  legend("leg-val", V);
+  groupedBars("chart-val", D.val, "set", V, { left: 230, highlight: c, aria: "validation MER" });
+  table("table-val", ["集合", ...V], D.val.map(r => [r.set, ...V.map(s => r[s])]), V.map((_, i) => i + 1));
+
+  scatter("chart-lat", D.latency);
+  table("table-lat", ["方案", "MER", "<5 s p50", "5-15 s p50", "15-30 s p50", ">30 s p50", "<5 s p95"],
+        D.latency.map(r => [r.variant, r.mer, r["<5 s"], r["5-15 s"], r["15-30 s"], r[">30 s"], r.p95_short]));
+
+  document.getElementById("wins").textContent =
+    `逐条比较 ${D.n_bv1} 条：C 更好 ${D.wins["C better"]} 条，VoiceCursor 更好 ${D.wins["VoiceCursor better"]} 条，持平 ${D.wins.tie} 条。下表按"VoiceCursor 比 C 少几个错误"排序。`;
+  const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+  document.getElementById("table-clips").innerHTML = "<table><tr><th>clip</th><th>语言</th><th>时长 s</th><th>C 错 / VC 错 / 参考 token</th><th>参考（原文）</th><th>C（对照参考标出差异）</th><th>VoiceCursor（对照参考标出差异）</th></tr>" +
+    D.gap.map(g => `<tr><td>${g.id}</td><td>${g.lang}</td><td>${g.dur}</td><td>${g.c_err} / ${g.vc_err} / ${g.n}</td>` +
+      `<td class="txt"><div>${esc(g.ref)}</div></td><td class="txt"><div>${foldMarks(g.c_html)}</div></td>` +
+      `<td class="txt"><div>${foldMarks(g.vc_html)}</div></td></tr>`).join("") + "</table>";
+}
+function foldMarks(h) {  // a visible "…" where an unchanged run is folded away
+  return h.replace(/<span class="fold">/g, '<span class="fold-marker">…</span><span class="fold">');
+}
+document.getElementById("fold").onchange = e =>
+  document.getElementById("table-clips").classList.toggle("folded", e.target.checked);
+document.getElementById("theme").onclick = () => {
+  const dark = getComputedStyle(document.querySelector(".viz-root")).colorScheme === "dark";
+  document.documentElement.dataset.theme = dark ? "light" : "dark"; render();
+};
+render();
+window.addEventListener("resize", render);
+</script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+# Dataset pipeline configuration. Paths are relative to the repo root.
+data_root: data/private            # audio_path in manifests is relative to this
+sources_registry: configs/sources.yaml
+
+validation:
+  max_duration_sec: 30.0           # Whisper's encoder window; longer clips need segmentation
+  min_duration_sec: 0.3
+  expected_sample_rate_hz: 16000   # other rates are a warning (we resample), not an error
+  duration_tolerance_sec: 0.05     # manifest duration vs decoded header
+  clipped_fraction_warn: 0.001     # >0.1% samples at full scale
+  silence_dbfs: -60.0             # -50 flagged a real quiet phone recording (6f13eeff)
+  max_edge_silence_sec: 3.0
+
+split:
+  seed: 20261027
+  # Pilot targets from plan.md §3.1, in hours.
+  target_hours: {train: 10.0, val: 2.0, test: 3.0}
+  # Grouping keys: records sharing ANY of these values end up in the same split.
+  group_by: [speaker_id, session_id, parent_utterance_id, sha256]
+  # Read-speech corpora reuse prompt texts across speakers; enabling this forces records
+  # with identical normalized transcripts into one split (stricter, can over-merge).
+  group_identical_transcripts: false
+  locked_test_file: data/manifests/locked_test_groups.json
+
+audit:
+  min_slice_n: 30                  # slices below this are reported as "insufficient N"

@@ -1,0 +1,41 @@
+# Zero-shot openai/whisper-large-v3 with reference decoding v2 settings (2026-10-31). Weights via hf-mirror.com, sha256 checked against the mirror's LFS hash.
+model:
+  name_or_path: openai/whisper-large-v3
+  revision: 06f233fe06e710322aca913c1bc4249a0d71fce1
+  adapter_path: null
+decoding:
+  language: auto
+  task: transcribe
+  num_beams: 5
+  max_new_tokens: 200
+  long_form:
+    condition_on_prev_tokens: false
+    temperature_fallback:
+    - 0.0
+    - 0.2
+    - 0.4
+    - 0.6
+    - 0.8
+    - 1.0
+    compression_ratio_threshold: 1.35
+    logprob_threshold: -1.0
+  return_timestamps: false
+  initial_prompt: null
+  prompt_condition: always
+  allowed_languages:
+  - zh
+  - en
+  output_script: simplified
+runtime:
+  device: auto
+  dtype: float32
+  batch_size: 8
+  seed: 1234
+data:
+  data_root: data/private
+  manifest: data/manifests/benchmark_v1.jsonl
+  split: val
+scoring:
+  normalization_policy: zh_en_v1
+  bootstrap_iters: 1000
+  min_slice_n: 30

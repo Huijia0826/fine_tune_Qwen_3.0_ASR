@@ -1,0 +1,21 @@
+# Trial server (2026-11-12): qwen3asr_J3 checkpoint-600 with the J3 evaluation decoding
+# (configs/experiments/qwen3asr_ctxJ2_chunk25.yaml: greedy, 25 s chunks + short-tail merge, simplified output).
+# context_file off: the page / API pass the request's own context (prompt field) instead.
+model:
+  name_or_path: Qwen/Qwen3-ASR-1.7B
+  revision: 7278e1e70fe206f11671096ffdd38061171dd6e5
+  adapter_path: null
+  checkpoint_path: runs/qwen3asr_J3/checkpoint-600
+decoding:
+  language: auto           # zh / en from the request are forced as Chinese / English
+  context: ""              # default when the request has no prompt
+  context_file: null
+  max_new_tokens: 1024
+  max_chunk_sec: 25
+  output_script: simplified
+runtime:
+  backend: qwen3_asr
+  dtype: bfloat16
+  batch_size: 1
+  timing: true           # split model time into features / prefill / decode / post
+  seed: 1234

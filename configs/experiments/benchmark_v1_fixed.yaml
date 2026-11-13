@@ -1,0 +1,31 @@
+# Baseline + decoding fixes (2026-10-29): identical to configs/eval.yaml except
+# allowed_languages [zh,en] + Simplified output. Unprompted. Run on benchmark v1 test (milestone).
+model:
+  name_or_path: openai/whisper-small
+  revision: 973afd24965f72e36ca33b3055d56a652f456b4d
+  adapter_path: null
+decoding:
+  language: auto
+  task: transcribe
+  num_beams: 5
+  max_new_tokens: 200
+  long_form:
+    condition_on_prev_tokens: false
+  return_timestamps: false
+  initial_prompt: null
+  prompt_condition: always
+  allowed_languages: [zh, en]
+  output_script: simplified
+runtime:
+  device: auto
+  dtype: float32
+  batch_size: 8
+  seed: 1234
+data:
+  data_root: data/private
+  manifest: data/manifests/benchmark_v1.jsonl
+  split: val
+scoring:
+  normalization_policy: zh_en_v1
+  bootstrap_iters: 1000
+  min_slice_n: 30

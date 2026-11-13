@@ -1,0 +1,32 @@
+# Phase 2 LoRA config. Values are starting points; the smoke test and overfit test validate them.
+# They have not been tuned.
+base_model:
+  name_or_path: openai/whisper-small
+  revision: 973afd24965f72e36ca33b3055d56a652f456b4d
+lora:
+  r: 32
+  alpha: 64            # effective scale alpha/r = 2
+  dropout: 0.05
+  # Introspected names (docs/decisions.md D10): enc self-attn, dec self-attn, dec cross-attn.
+  target_modules: [q_proj, k_proj, v_proj, out_proj]
+data:
+  data_root: data/private
+  manifests: [data/manifests/ascend.jsonl, data/manifests/benchmark_chinese.jsonl]
+  train_split: train
+  eval_split: val
+  max_label_tokens: 448
+training:
+  seed: 1234
+  learning_rate: 1.0e-4
+  warmup_ratio: 0.05
+  weight_decay: 0.0
+  per_device_batch_size: 8
+  gradient_accumulation_steps: 2   # effective batch 16
+  num_epochs: 3
+  max_grad_norm: 1.0
+  precision: fp32        # MPS fp16/bf16 stability not measured yet
+  gradient_checkpointing: true  # batch 8 without it used 27 GB on the 24 GB M5 (smoke test 2026-10-29)
+  num_workers: 0
+  log_every_steps: 10
+  eval_every_steps: 200
+  eval_max_batches: null # null = full val set

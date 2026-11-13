@@ -1,0 +1,83 @@
+# App -> tone mapping (owner, 2026-11-09). tone: casual | neutral | formal | unknown. Keyed by app display name;
+# the bundle id -> app name join is done in code (production logs carry bundle ids). Rules that use it: casual drops
+# only the sentence-final period (docs/decisions.md 2026-11-09).
+tone	scenario	app
+casual	个人聊天	WhatsApp
+casual	个人聊天	Google Messages
+neutral	AI 助手	Claude
+neutral	AI 助手	ChatGPT
+neutral	AI 助手	Muse
+casual	社交发帖 / 评论	X (Twitter)
+casual	游戏内聊天	Roblox
+unknown	系统 / 无上下文	无 app 信息（多为 iOS 键盘）
+casual	搜索 / 短字段	Google 搜索 app
+unknown	系统 / 无上下文	Chrome（浏览器，拿不到网址）
+neutral	AI 编程	Codex
+casual	个人聊天	WeChat 微信
+neutral	AI 编程	Cursor
+casual	AI 角色聊天	zeta
+casual	社交发帖 / 评论	Instagram
+casual	个人聊天	Messenger
+neutral	AI 助手	Grok Bot
+casual	社交发帖 / 评论	TikTok
+casual	社交发帖 / 评论	Facebook
+casual	个人聊天	WhatsApp Business
+neutral	AI 助手	Grok
+casual	个人聊天	Messages（Apple 信息）
+formal	邮件	Gmail
+formal	笔记	Apple Notes
+formal	工作 IM	Lark / 飞书
+casual	个人聊天	Telegram
+formal	工作 IM	Slack
+neutral	AI 编程	Antigravity
+casual	AI 角色聊天	Dootchi
+casual	社交发帖 / 评论	YouTube
+casual	个人聊天	Signal
+neutral	终端	Terminal
+neutral	AI 编程	VS Code
+neutral	终端	iTerm2
+casual	个人聊天	Discord
+casual	搜索 / 短字段	muse.ai（网页）
+neutral	终端	Warp
+formal	笔记	Samsung Notes
+formal	工作 IM	LinkedIn
+casual	搜索 / 短字段	Play Store
+casual	个人聊天	WhatsApp 第三方改版（GB / MB WhatsApp）
+formal	工作 IM	Google Chat
+neutral	AI 助手	DeepSeek
+formal	笔记	Keep
+casual	AI 角色聊天	PolyBuzz
+formal	文档	Google Docs
+unknown	系统 / 无上下文	System UI
+casual	个人聊天	Google Voice
+casual	AI 角色聊天	Talkie
+neutral	AI 助手	Perplexity
+casual	个人聊天	Snapchat
+casual	个人聊天	TextNow
+formal	邮件	Outlook
+casual	个人聊天	Grindr
+neutral	AI 助手	Omni AI
+neutral	AI 助手	Gemini
+casual	AI 角色聊天	Janitor
+neutral	开发工具	Meta 内部工具
+casual	AI 角色聊天	ParaDoor
+neutral	AI 助手	豆包 Doubao
+unknown	系统 / 无上下文	Brave（浏览器，拿不到网址）
+formal	文档	Notion
+casual	AI 角色聊天	MingloTalk
+casual	社交发帖 / 评论	Whatnot
+formal	工作 IM	Microsoft Teams
+casual	搜索 / 短字段	Amazon
+unknown	系统 / 无上下文	Vivaldi
+neutral	AI 助手	Genspark
+neutral	工具类	CapCut
+casual	搜索 / 短字段	Mercado Livre
+casual	搜索 / 短字段	Calendar
+casual	AI 角色聊天	Emochi
+unknown	系统 / 无上下文	DuckDuckGo
+unknown	系统 / 无上下文	Firefox（浏览器，拿不到网址）
+casual	AI 角色聊天	SocialAI
+casual	搜索 / 短字段	Maps
+formal	笔记	Obsidian
+unknown	系统 / 无上下文	Opera
+formal	办公协作（写作类）	www.reeval.io（网页）

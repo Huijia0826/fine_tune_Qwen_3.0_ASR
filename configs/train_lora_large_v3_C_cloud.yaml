@@ -1,0 +1,38 @@
+# lora_large_v3_C (2026-11-02): lora_large_v3_B recipe (ASCEND 1/3) + online_phase1 (230 owner-reviewed production
+# clips, 0.54 h) for training; online_phase1 val (57) joins the val loss. Owner decision 2026-11-02.
+base_model:
+  name_or_path: openai/whisper-large-v3
+  revision: 06f233fe06e710322aca913c1bc4249a0d71fce1
+lora:
+  r: 32
+  alpha: 64            # effective scale alpha/r = 2
+  dropout: 0.05
+  # Introspected names (docs/decisions.md D10): enc self-attn, dec self-attn, dec cross-attn.
+  target_modules: [q_proj, k_proj, v_proj, out_proj]
+data:
+  data_root: data/private
+  manifests: [data/manifests/ascend_third.jsonl, data/manifests/benchmark_chinese.jsonl, data/manifests/arena_019f8e51.jsonl,
+              data/manifests/arena_019f6442.jsonl, data/manifests/segmented_long.jsonl,
+              data/manifests/online_phase1.jsonl]
+  train_split: train
+  eval_split: val
+  max_label_tokens: 448
+  timestamp_ratio: 0.5     # half the clips get timestamp labels (keeps long-form decoding working; lora_v1 lesson)
+training:
+  seed: 1234
+  learning_rate: 5.0e-5
+  warmup_ratio: 0.05
+  weight_decay: 0.0
+  per_device_batch_size: 16      # cloud smoke test: 0.19 s/step, 13.4 GB (vs 0.35 s with batch 8 + checkpointing)
+  gradient_accumulation_steps: 1   # effective batch 16, same as lora_v1
+  num_epochs: 3             # upper bound; early stopping usually ends sooner
+  early_stopping_patience: 3  # stop after 3 evals (600 steps) without val-loss improvement
+  early_stopping_min_delta: 0.001
+  max_grad_norm: 1.0
+  precision: bf16        # cloud CUDA (Ampere+): bf16 autocast; falls back to fp32 elsewhere
+  gradient_checkpointing: false  # 96 GB GPU: not needed
+  num_workers: 8         # Linux, 22 cores: keep the GPU fed
+  log_every_steps: 10
+  eval_every_steps: 200
+  eval_max_batches: null # null = full val set
+  keep_all_checkpoints: true  # pick the final checkpoint by decoded val MER (incl. val_longform)
