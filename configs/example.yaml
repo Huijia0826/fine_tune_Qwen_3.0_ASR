@@ -1,0 +1,76 @@
+# Example config. Every key is optional: anything you leave out uses the default in qwen_asr_ft/config.py.
+# Override any value from the command line:  qasr train -c configs/example.yaml --set train.lr=1e-5
+# ${VAR} / ${VAR:-default} read environment variables (or other config keys such as ${run_name}).
+
+run_name: ${RUN_NAME:-my_first_run}
+work_dir: ${WORK_DIR:-runs}/${run_name}      # everything this run writes goes here
+
+model:
+  base: Qwen/Qwen3-ASR-1.7B     # HF repo id or a local folder (e.g. on an offline cluster)
+  revision: null                # pin a commit for reproducibility, e.g. 7278e1e70fe206f11671096ffdd38061171dd6e5
+
+data:
+  train: [data/train.jsonl]     # one or more manifests (format: docs/DATA_FORMAT.md)
+  val: [data/val.jsonl]         # used ONLY to pick the checkpoint
+  test:                         # name -> manifest; each is decoded once with the chosen checkpoint
+    test: data/test.jsonl
+  audio_root: null              # prefix for relative audio paths (default: the manifest's own folder)
+  max_audio_sec: 180            # longer training clips are skipped (Qwen accepts long audio; memory is the limit)
+  default_language: auto        # auto = Chinese if the label has Chinese characters, else English
+  normalize_label: null         # optional "module:function" applied to every training label
+
+  context:                      # what goes into Qwen's system prompt
+    enabled: true
+    fields:                     # map YOUR manifest field names here
+      context: context          # free-text context (used as is when present)
+      app: app
+      tone: tone
+      vocabulary: vocabulary    # list or comma-separated string of hotwords
+      before_cursor: before_cursor
+      after_cursor: after_cursor
+    max_vocab: 50
+    before_chars: 200
+    after_chars: 120
+    leak_ngram: 8               # drop cursor text that shares 8+ characters with the label (prevents copying)
+
+  augment:                      # training-time context augmentation; enable when you train WITH context
+    enabled: false
+    seed: 1234
+    vocab:                      # how often the vocabulary is kept / mixed with distractors / distractors only
+      keep: 0.5
+      targets_plus_distractors: 0.4
+      distractors_only: 0.1
+      n_distractors: [3, 10]
+      lookalikes: true
+    cursor:                     # cursor text: real / previous utterance / another clip's / none
+      keep: 0.45
+      previous_utterance: 0.2
+      other_clip: 0.15
+      none: 0.2
+    distractor_pool: null       # optional txt, one term per line
+    banned_terms: null          # optional txt: test-set target words that must never appear in training context
+
+train:                          # full-parameter SFT (effective batch = batch_size x grad_acc)
+  lr: 2.0e-5
+  lr_scheduler_type: linear
+  warmup_ratio: 0.05
+  batch_size: 4
+  grad_acc: 4
+  epochs: 3
+  max_steps: -1                 # set e.g. 5 for a smoke test
+  save_steps: 200
+  num_workers: 8
+  seed: 1234
+
+decode:
+  language: auto                # or force a Qwen language name, e.g. Chinese
+  max_chunk_sec: 25             # long audio is cut near this length at a quiet point
+  min_tail_sec: 5
+  batch_size: 16
+  use_context: true
+  copy_guard: false             # cut an output tail copied from the cursor text
+  to_simplified: true
+
+eval:
+  slice_by: [language_mix]      # any manifest field, plus language_mix / duration_bucket
+  bootstrap: 1000

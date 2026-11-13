@@ -1,31 +1,26 @@
-# Audio and private data never enter git
-data/private/
-data/raw/
+# data and outputs never go into git
+data/
+runs/
+logs/
+examples/toy/
 *.wav
 *.flac
 *.mp3
 *.ogg
 *.m4a
 *.opus
-
-# Model artifacts
-checkpoints/
-outputs/
 *.safetensors
 *.bin
 *.pt
 
-# Eval runs (per-utterance hypotheses can contain private speech content)
-reports/runs/
-
-# Env
+# environments / caches
 .venv/
+.venv-*/
+hf_cache/
 __pycache__/
 *.pyc
+*.egg-info/
 .pytest_cache/
 .ruff_cache/
 .env
 .DS_Store
-
-# Training runs: adapters are trained on private recordings
-runs/

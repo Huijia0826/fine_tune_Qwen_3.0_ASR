@@ -1,0 +1,16 @@
+# Smoke test on the toy dataset (examples/make_toy_dataset.py): 5 steps, 2 checkpoints, then select + test.
+run_name: toy
+work_dir: runs/toy
+data:
+  train: [examples/toy/train.jsonl]
+  val: [examples/toy/val.jsonl]
+  test:
+    toy_test: examples/toy/test.jsonl
+train:
+  max_steps: 5
+  save_steps: 3
+  batch_size: 2
+  grad_acc: 1
+  num_workers: 2
+decode:
+  batch_size: 8
