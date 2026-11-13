@@ -1,7 +1,7 @@
 # Fine Tune Qwen 3.0 ASR
 
 A small, configurable framework to fine-tune [Qwen3-ASR](https://huggingface.co/Qwen/Qwen3-ASR-1.7B) on your own
-speech data and to measure whether the result is actually better. Bring a list of `(audio, transcript)` pairs; the
+speech data and to measure whether the result is actually better. 中文说明：[docs/GUIDE_zh.md](docs/GUIDE_zh.md)。 Bring a list of `(audio, transcript)` pairs; the
 framework handles prompt building, training, checkpoint selection, long-audio decoding and scoring.
 
 - **Any data**: one JSON line per clip; field names, languages and paths are set in a YAML config, nothing is hard-coded.
@@ -56,7 +56,7 @@ qwen_asr_ft/      the package (config, data, context, train, infer, evaluate, me
 configs/          example.yaml: every option, with comments
 scripts/          setup_env.sh, table_to_manifest.py, slurm_pipeline.sbatch
 examples/         toy dataset + smoke-test config
-docs/             DATA_FORMAT.md · HOW_IT_WORKS.md (training code walk-through) · LESSONS.md (what worked for us)
+docs/             GUIDE_zh.md (中文说明) · DATA_FORMAT.md · HOW_IT_WORKS.md (training code walk-through) · LESSONS.md (what worked for us)
 tests/            CPU-only tests
 ```
 
