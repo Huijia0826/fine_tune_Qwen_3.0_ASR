@@ -1,4 +1,4 @@
-# WhisperFlow — Mandarin / zh-en code-switch dictation
+# Fine Tune Qwen 3.0 ASR — Mandarin / zh-en code-switch dictation
 
 Fine-tune Whisper-small (LoRA) for Mandarin + Mandarin-English code-switching dictation and
 benchmark it honestly against baselines and Wispr Flow. Spec: `plan.md`.
