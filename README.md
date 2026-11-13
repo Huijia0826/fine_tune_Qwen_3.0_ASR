@@ -1,7 +1,6 @@
-# Fine Tune Qwen 3.0 ASR — Mandarin / zh-en code-switch dictation
+# Fine Tune Qwen 3.0 ASR 
 
-Fine-tune Whisper-small (LoRA) for Mandarin + Mandarin-English code-switching dictation and
-benchmark it honestly against baselines and Wispr Flow. Spec: `plan.md`.
+Fine-tune Fine Tune Qwen 3.0 ASR 1.7B (LoRA).
 
 **Status (2026-10-27): Phase 0 complete, Phase 1 tooling built. No real data ingested, no
 model weights downloaded, no metrics measured yet.** See `docs/decisions.md` → owner decisions.
